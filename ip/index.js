@@ -82,7 +82,7 @@ const createCard = ((res) => {
 
 	const countryFlag = document.createElement("img");
 
-	countryFlag.src = `https://flagsapi.com/TR/flat/64.png`;
+	countryFlag.src = `https://flagcdn.com/w320/${res.data["ülkeKodu"].toLowerCase()}.png`;
 
 	const cardInfo = document.createElement("div");
 
