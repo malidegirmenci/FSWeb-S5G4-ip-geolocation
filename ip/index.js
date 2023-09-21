@@ -1,5 +1,5 @@
 //axios import buraya gelecek
-
+import axios from 'axios';
 var benimIP;
 
 
@@ -7,25 +7,25 @@ var benimIP;
 // licensed to Ergineer 2022
 require("babel-core/register");
 require("babel-polyfill");
-async function ipAdresimiAl(){
+async function ipAdresimiAl() {
 	await axios({
 		method: 'get',
 		url: 'https://apis.ergineer.com/ipadresim',
 	})
-	.then(function (response) {
-		return response.data
-	})
-	.then(function (a) {
-		benimIP=a
-	});
-}				
+		.then(function (response) {
+			return response.data;
+		})
+		.then(function (a) {
+			benimIP = a
+		});
+}
 // ------------ değiştirmeyin --------------
 
 
 /*
 	ADIM 1: axios kullanarak, aşağıdaki URL'ye GET sorgusu atacağız
-    (tag içindeki yere kendi ipnizi yazarak URL'yi oluşturun):
-    https://apis.ergineer.com/ipgeoapi/<ipniz>
+	(tag içindeki yere kendi ipnizi yazarak URL'yi oluşturun):
+	https://apis.ergineer.com/ipgeoapi/<ipniz>
 	
 	NOT: Bilgisayarın IP adresini öğrenmek için: https://apis.ergineer.com/ipadresim 
 	ADIM 5'e gelene kadar fonksiyonunuzu test etmek için ip nizi URL'ye manuel olarak ekleyebilirsiniz.
@@ -36,9 +36,10 @@ async function ipAdresimiAl(){
 	iyice anlamanız gerekmektedir.
 	
 */
+
 /*
 	ADIM 3: Argümanı sadece 1 nesne kabül eden bir fonksiyon oluşturun.
-    DOM metotlarını ve özelliklerini kullanarak, şunları gerçekleştirin:
+	DOM metotlarını ve özelliklerini kullanarak, şunları gerçekleştirin:
 	NOT: API'den gelen bayrak url'i çalışmazsa alternatif olarak: https://flagsapi.com/
 	<div class="card">
 	<img src={ülke bayrağı url} />
@@ -51,7 +52,7 @@ async function ipAdresimiAl(){
 		<p>Para birimi: {para birimi}</p>
 		<p>ISP: {isp}</p>
 	</div>
-    </div>
+	</div>
 */
 
 /*
@@ -67,6 +68,41 @@ async function ipAdresimiAl(){
 	Örnek dinamik URL kullanımı: var url = "https://apis.ergineer.com/ipgeoapi/"+benimIP; 
 */
 
+ipAdresimiAl().then(() => {
+	axios.get(`https://apis.ergineer.com/ipgeoapi/${benimIP}`).then((res) => {
+		document.querySelector(".cards").append(createCard(res));
+	}).catch((err) => {
+		console.log(err);
+	})
+})
 
+const createCard = ((res) => {
+	const card = document.createElement("div")
+	card.classList.add("card");
 
-//kodlar buraya gelecek
+	const countryFlag = document.createElement("img");
+
+	countryFlag.src = `https://flagsapi.com/TR/flat/64.png`;
+
+	const cardInfo = document.createElement("div");
+
+	const h3 = document.createElement("h3");
+	h3.classList.add("ip");
+	h3.textContent = res.data.sorgu;
+	cardInfo.append(h3);
+	const paragraphs = [
+		`${res.data.ülke}  ${res.data.ülkeKodu}`,
+		`Enlem: ${res.data.enlem} Boylam: ${res.data.boylam}`,
+		`Şehir: ${res.data.şehir}`,
+		`Saat dilimi: ${res.data.saatdilimi}`,
+		`Para birimi: ${res.data.parabirimi}`,
+		`ISP: ${res.data.isp}`
+	];
+	for(let i = 0; i < paragraphs.length; i++){
+		const p = document.createElement("p");
+		p.textContent = paragraphs[i];
+		cardInfo.appendChild(p);
+	}
+	card.append(countryFlag, cardInfo);
+	return card
+});
